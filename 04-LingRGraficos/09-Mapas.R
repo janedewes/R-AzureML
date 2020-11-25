@@ -14,11 +14,14 @@ getwd()
 # Instalar os pacotes
 install.packages(c("ggplot2", "maps", "mapdata"))
 
+install.packages("mapdata")
+
 
 # Carregar os pacotes
 library(ggplot2)
 library(maps)
 library(mapdata)
+
 
 
 
@@ -65,7 +68,7 @@ labs <- data.frame(
 # colocando pontos(def acima) no mapa 
 gg1 + 
   geom_point(data = labs, aes(x = long, y = lat), color = "black", size = 2) +
-  geom_point(data = labs, aes(x = long, y = lat), color = "yellow", size = 2)
+  geom_point(data = labs, aes(x = long, y = lat), color = "red", size = 2)
 
 
 

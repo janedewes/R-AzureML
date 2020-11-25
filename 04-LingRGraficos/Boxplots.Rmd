@@ -1,0 +1,250 @@
+---
+title: 'Graphics: BoxPlot, ScatterPlot, BarPlot, Histograms, Pie'
+author: "Janeci Leoni Dewes"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+Basic graphic options available in the R language.
+
+## 1º Boxplot
+
+```{r}
+# def Data
+attach(sleep)
+```
+
+
+
+```{r}
+sleepboxplot = boxplot(data = sleep, extra ~ group,
+                       main = "Duração do Sono",
+                       col.main = "red", ylab = "Horas", xlab = "Droga")
+```
+
+
+## Horizontal boxplot
+
+
+```{r}
+# Horizontal boxplot
+horizontalboxplot = boxplot(data = sleep, extra ~ group,
+                            ylab = "", xlab = "", horizontal = T)
+
+```
+
+```{r}
+# Add color
+horizontalboxplot = boxplot(data = sleep, extra ~ group,
+                            ylab = "", xlab = "", horizontal = T,
+                            col = c("blue", "red") )
+
+```
+## 2º Scatterplot
+
+```{r}
+# Def data
+x = rnorm(10,5,7)
+y = rpois(10,7)
+z = rnorm(10,6,7)
+t = rpois(10,9)
+
+```
+
+
+
+```{r}
+# Plot
+plot(x, y, col = 123, pch = 10, main = "Multi Scatterplot",
+     col.main = "red", cex.main = 1.5, xlab = "Variável Independente", 
+     ylab = "Variável Dependente")
+
+# Add points
+points(z, t, col = "blue", pch = 4)
+# Add points
+points(y, t, col = 777, pch = 9)
+# Add legend
+legend(-6,5.9, legend = c("Nível 1", "Nível 2", "Nível 3"),
+       col = c(123, "blue", 777), pch = c(10,4,9),
+       cex = 0.65, bty = "n")
+
+
+```
+
+## 3º Barplot
+
+```{r}
+# Def data
+dados <- matrix(c(652,1537,598,242,36,46,38,21,218,327,106,67), nrow = 3, byrow = T)
+dados
+
+```
+
+```{r}
+# Nomeando linhas e colunas na matriz
+colnames(dados) <- c("0","1-150","151-300",">300") 
+rownames(dados) <- c("Jovem","Adulto","Idoso") 
+dados
+
+```
+
+```{r}
+# Construindo o Barplot
+barplot(dados, beside = T) 
+barplot(dados) 
+
+```
+
+```{r}
+# Construindo o plot - Stacked Bar Plot
+# As 3 faixas de idade são representadas na mesma coluna para as diferentes quantidades
+barplot(dados, col = c("steelblue1", "tan3", "seagreen3"))
+legend("topright", pch = 15, col = c("steelblue1", "tan3", "seagreen3"), legend = c("Jovem","Adulto","Idoso"))
+
+
+```
+
+
+```{r}
+# Color and legend
+barplot(dados, beside = T, col = c("steelblue1", "tan3", "seagreen3"))
+legend("topright", pch = 15, col = c("steelblue1", "tan3", "seagreen3"), legend = c("Jovem","Adulto","Idoso"))
+
+
+```
+```{r}
+# Com a Transposta da matriz, inverter as posições entre faixa etária e faixa de quantidade
+t(dados)
+
+```
+
+```{r}
+# Grafico de transp dos dados
+barplot(t(dados), beside = T, col = c("steelblue1", "tan3", "seagreen3", "peachpuff1"))
+legend("topright", pch = 15, col = c("steelblue1", "tan3", "seagreen3", "peachpuff1"), legend = c("0","1-150","151-300",">300"))
+
+```
+
+
+
+## 4º Histograms
+
+```{r}
+# Def data
+dados = cars$speed
+```
+
+
+```{r}
+# Construindo um histograma - é usado para visualizar a distribuição de freq de UMA variável.
+# divide em classes (grupos) de dados que aparecem com maior/menor frequencia.
+hist(dados)
+```
+# ?hist
+Conforme consta no help, o parâmetro breaks pode ser um dos itens abaixo:
+Um vetor para os pontos de quebra entre as células do histograma
+Uma função para calcular o vetor de breakpoints
+Um único número que representa o número de células para o histograma
+Uma cadeia de caracteres que nomeia um algoritmo para calcular o número de células 
+Uma função para calcular o número de células.
+
+```{r}
+hist(dados, breaks = 10, main = "Histograma das Velocidades") # breaks: caixinhas
+```
+
+
+```{r}
+hist(dados, labels = T, breaks = c(0,5,10,20,30), main = "Histograma das Velocidades") # caixinhas específicas
+```
+
+
+```{r}
+hist(dados, labels = T, breaks = 10, main = "Histograma das Velocidades") # mostra o total de freq das caixinhas
+```
+
+
+```{r}
+hist(dados, labels = T, ylim = c(0,10), breaks = 10, main = "Histograma das Velocidades")
+```
+
+
+```{r}
+# Adicionando linhas ao histograma
+grafico <- hist(dados, breaks = 10, main = "Histograma das Velocidades")
+# Criando uma distribuição normal, media, desvio padrão 
+xaxis = seq(min(dados), max(dados), length = 10)
+yaxis = dnorm(xaxis, mean = mean(dados), sd = sd(dados))
+#calcular a diferença:
+yaxis = yaxis*diff(grafico$mids)*length(dados)
+
+#acrescentar mais uma camada = distribuição normal 
+lines(xaxis, yaxis, col = "red")
+
+```
+distribuição normal mostra se os dados estão com: 
+media ~ = 0
+desvio padrão ~ = 1
+
+
+## 5º Pie
+
+```{r}
+# Criando as fatias
+fatias = c(40, 20, 40)
+# Nomeando os labels
+paises = c("Brasil", "Argentina", "Chile")
+
+```
+
+```{r}
+# Unindo paises e fatias - com a fç paste
+paises = paste(paises, fatias)
+
+```
+
+```{r}
+# Incluindo mais detalhes no label
+paises = paste(paises, "%", sep = "")
+
+```
+
+```{r}
+# Construindo um gráfico
+pie(fatias, labels = paises,
+    col = c("darksalmon", "gainsboro", "lemonchiffon4"), 
+    main ="Distribuição de Vendas")
+
+```
+
+```{r}
+# Def dataframe (iris)
+attach(iris)
+```
+
+```{r}
+Values = table(Species) 
+labels = paste(names(Values))
+pie(Values, labels = labels, main = "Distribuição de Espécies")
+
+```
+
+
+```{r}
+# 3D - Pcte Plotrix
+library(plotrix) 
+```
+
+```{r}
+pie3D(fatias, labels = paises, explode = 0.05,
+      col = c("steelblue1", "tomato2", "tan3"), 
+      main = "Distribuição de Vendas")
+
+# explode = divisão entre as fatias. 
+```
+
+
+
+
+

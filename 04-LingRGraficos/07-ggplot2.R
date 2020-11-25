@@ -5,7 +5,7 @@
 
 
 # def dir
-setwd("C:/Users/paloma/Desktop/DSA/BigDataRAzure/04-LingRGraficos")
+setwd("C:/Users/paloma/Desktop/GitHub/R-Tools/04-LingRGraficos")
 getwd()
 
 
@@ -61,6 +61,7 @@ camada2 <- geom_line(
   data = modelo_fit,
   color = "darkred"
 )
+
 # Camada 1 (pontos) e camada 2(linha de regressão)
 ggplot() + camada1 + camada2
 

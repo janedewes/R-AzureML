@@ -1,0 +1,315 @@
+---
+title: "ggplot2"
+author: "Janeci Leoni Dewes"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R ggplot2
+
+Data visualization study done with the ggplot2 library, one of the most popular 
+visualization packages for R language.
+
+This package offers more modification options, ready-made captions and more solid formatting.
+https://cran.r-project.org/web/packages/ggplot2/ggplot2.pdf
+https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf
+
+```{r}
+# Instalando e carregando o pacote
+# install.packages("ggplot2")
+library(ggplot2)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+# Plotando um gráfico básico com qplot() - (tips => dataset que vem com R)
+data(tips, package = 'reshape2')
+# qplot fç do ggplot2, gera um scatterplot
+qplot(total_bill, tip, data = tips, geom = "point")
+```
+```{r}
+# Usando a gramática dos gráficos:
+# Camada 1
+camada1 <- geom_point(
+  mapping = aes(x = total_bill, y = tip, color = sex),
+  data = tips,
+  size = 3
+)
+# ggplot é a fç do ggplot2
+ggplot() + camada1
+```
+```{r}
+# Contruindo um modelo de regressão
+modelo_base <- lm(tip ~ total_bill, data = tips)
+modelo_fit <- data.frame(
+  total_bill = tips$total_bill, 
+  predict(modelo_base, interval = "confidence")
+)
+
+head(modelo_fit)
+```
+
+```{r}
+# Camada 2 - colocar o modelo de regressão (modelo_fit) na forma de linha (geom_line())
+camada2 <- geom_line(
+  mapping = aes(x = total_bill, y = fit),
+  data = modelo_fit,
+  color = "darkred"
+)
+
+# Camada 1 (pontos) e camada 2(linha de regressão)
+ggplot() + camada1 + camada2
+```
+```{r}
+# Camada 3
+camada3 <- geom_ribbon(
+  mapping = aes(x = total_bill, ymin = lwr, ymax = upr),
+  data = modelo_fit,
+  alpha = 0.3
+)
+# alpha = espessura 
+# geom_ribbon = limite de confiança (margem de erro do modelo de regressão(modelo preditivo))
+ggplot() + camada1 + camada2 + camada3
+```
+
+```{r}
+# Versão final otimizada - as 3 camadas acima, podem ser resumidas aos seguintes comandos:
+ggplot(tips, aes(x = total_bill, y = tip)) +
+  geom_point(aes(color = sex)) +
+  geom_smooth(method = 'lm')
+```
+
+```{r}
+
+# ScatterPlot com linha de regressão (que é um modelo preditivo)
+
+# Dados
+data = data.frame(cond = rep(c("Obs 1", "Obs 2"), 
+                             each = 10), var1 = 1:100 + 
+                    rnorm(100,sd = 9), var2 = 1:100 + 
+                    rnorm(100,sd = 16))
+
+
+# Plot
+ggplot(data, aes(x = var1, y = var2)) +    
+  geom_point(shape = 1) +  
+  geom_smooth(method = lm , color = "red", se = FALSE) 
+
+```
+
+
+```{r}
+# Bar Plot
+
+# Dados
+data = data.frame(grupo = c("A ","B ","C ","D ") , 
+                  valor = c(33,62,56,67) , 
+                  num_obs = c(100,500,459,342))
+
+# Gerando a massa de dados (cumsum= soma acumulada)
+data$right = cumsum(data$num_obs) + 30 * c(0:(nrow(data)-1))
+data$left = data$right - data$num_obs 
+
+# Plot
+ggplot(data, aes(ymin = 0)) + 
+  geom_rect(aes(xmin = left, xmax = right, 
+                ymax = valor, colour = grupo, fill = grupo)) +
+  xlab("Número de Observações") + ylab("Valor")
+```
+
+
+# Análise Usando mtcars (dataset)
+
+
+```{r}
+head(mtcars)
+```
+
+```{r}
+ggplot(data = mtcars, aes(x = disp, y = mpg)) + geom_point()
+```
+
+
+```{r}
+# Outro aspecto que pode ser mapeado nesse gráfico é a cor dos pontos
+ggplot(data = mtcars, 
+       aes(x = disp, y = mpg, 
+           colour = as.factor(am))) + geom_point()
+```
+```{r}
+# No entanto, tambem podemos mapear uma variável contínua à cor dos pontos:
+ggplot(mtcars, aes(x = disp, y = mpg, colour = cyl)) + geom_point()
+```
+
+
+```{r}
+# Também podemos mapear o tamanho dos pontos à uma variável de interesse:
+# A legenda é inserida no gráfico automaticamente
+ggplot(mtcars, aes(x = disp, y = mpg, colour = cyl, size = wt)) + geom_point()
+```
+```{r}
+# Os geoms definem qual forma geométrica será utilizada para a visualização dos dados no gráfico. 
+ggplot(mtcars, aes(x = as.factor(cyl), y = mpg)) + geom_boxplot()
+```
+
+```{r}
+# Histogramas
+ggplot(mtcars, aes(x = mpg), binwidth = 30) + geom_histogram()
+```
+
+
+```{r}
+# Gráfico de Barras
+ggplot(mtcars, aes(x = as.factor(cyl))) + geom_bar()
+```
+
+
+# Personalizando os gráficos
+
+```{r}
+ggplot(mtcars, aes(x = as.factor(cyl), y = mpg, 
+                   colour = as.factor(cyl))) + geom_boxplot()
+
+```
+
+```{r}
+ggplot(mtcars, aes(x = as.factor(cyl), y = mpg, 
+                   fill = as.factor(cyl))) + geom_boxplot()
+```
+
+
+```{r}
+ggplot(mtcars, 
+       aes(x = as.factor(cyl), y = mpg)) + 
+  geom_boxplot(color = "blue", fill = "seagreen4")
+```
+```{r}
+# Podemos alterar os eixos
+ggplot(mtcars, aes(x = mpg)) + 
+  geom_histogram() + 
+  xlab("Milhas por galão") + ylab("Frequência")
+```
+```{r}
+# Legendas
+ggplot(mtcars, aes(x = as.factor(cyl), fill = as.factor(cyl))) + 
+  geom_bar() +
+  labs(fill = "cyl")
+```
+
+```{r}
+# Trocando a posição da legenda (theme)
+ggplot(mtcars, aes(x = as.factor(cyl), fill = as.factor(cyl))) + 
+  geom_bar() +
+  labs(fill = "cyl") +
+  theme(legend.position = "top")
+
+```
+
+```{r}
+# Sem legenda
+ggplot(mtcars, aes(x = as.factor(cyl), fill = as.factor(cyl))) + 
+  geom_bar() +
+  guides(fill = FALSE)
+```
+```{r}
+# Facets - (vários graficos na mesma área de plotagem( facet_grid))
+# Horizontal:
+ggplot(mtcars, aes(x = mpg, y = disp, colour = as.factor(cyl))) + 
+  geom_point() + 
+  facet_grid(am~.)
+```
+```{r}
+# Vertical:
+ggplot(mtcars, aes(x = mpg, y = disp, colour = as.factor(cyl))) +
+  geom_point() + 
+  facet_grid(.~am)
+```
+
+# Vários plots juntos (gridExtra + ggplot2)
+
+
+```{r}
+# Plots diferentes juntos (diferente de Facet)
+# install.packages("gridExtra")
+library(gridExtra)
+library(ggplot2)
+```
+
+```{r}
+# Dataset diamonds(da ling R)
+data(diamonds)
+```
+
+
+```{r}
+# Histograma como plot1
+plot1 <- qplot(price, data = diamonds, binwidth = 1000)
+# ScatterPlot como plot2
+plot2 <- qplot(carat, price, data = diamonds, colour = cut)
+```
+
+
+```{r}
+# Combina os 2 plots na mesma área (graficos diferentes, potem na mesma area  (não é facet)
+grid.arrange(plot1, plot2, ncol = 1)
+```
+# Gráficos de Densidade
+
+```{r}
+ggplot(data = diamonds, aes(x = price, group = cut, fill = cut)) + 
+  geom_density(adjust = 1.5)
+```
+
+```{r}
+ggplot(data = diamonds, aes(x = price, group = cut, fill = cut)) + 
+  geom_density(adjust = 1.5 , alpha = 0.2)
+```
+
+```{r}
+ggplot(data = diamonds,aes(x = price, group = cut, fill = cut)) + 
+  geom_density(adjust = 1.5, position = "fill")
+```
+
+
+# Facets com reshape
+
+```{r}
+library(reshape2)
+library(plotly) # Com esse pacote é possivel publicar online, não é gratuito
+```
+
+```{r}
+
+sp <- ggplot(tips, aes(x = total_bill, y = tip/total_bill)) + geom_point(shape = 1) 
+
+sp + facet_grid(sex ~ .)
+
+ggplotly() # Os recursos interativos são do plotly
+```
+
+```{r}
+sp + facet_grid(. ~ sex)
+ggplotly()
+```
+
+
+```{r}
+sp + facet_wrap( ~ day, ncol = 2)
+ggplotly()
+```
+
+
+
+```{r}
+ggplot(mpg, aes(displ, hwy)) + geom_point() + facet_wrap(~manufacturer)
+ggplotly()
+```
+

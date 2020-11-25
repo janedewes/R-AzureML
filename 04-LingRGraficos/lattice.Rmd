@@ -1,0 +1,105 @@
+---
+title: "Lattice"
+author: "Janeci Leoni Dewes"
+date: "10/24/2020"
+output: html_document
+---
+
+
+## Lattice package
+
+The Lattice package is a high-level data visualization system with an emphasis on multivariate data.
+
+When creating graphs, conditions and groupings are 2 concepts
+that allow us to more easily understand the data at hand.
+The concept behind Lattice is to group data and create visualizations in a way that makes it easier to search for patterns.
+
+```{r}
+# Instalar e carregar o pacote
+# install.packages('lattice')
+library(lattice)
+```
+
+## ScatterPlot
+
+You can also embed plots, for example:
+
+```{r}
+# ScatterPlot com Lattice (dataset iris)
+# fç xyplot
+xyplot(data = iris, groups = Species, Sepal.Length ~ Petal.Length)
+```
+
+## BarPlot
+
+```{r}
+# BarPlots com dataset Titanic (dataset da ling R)
+
+# fç usada é o barchart
+barchart(Class ~ Freq | Sex + Age, data = as.data.frame(Titanic),
+         groups = Survived, stack = T, layout = c(4, 1),
+         auto.key = list(title = "Dados Titanic", columns = 2))
+
+barchart(Class ~ Freq | Sex + Age, data = as.data.frame(Titanic),
+         groups = Survived, stack = T, layout = c(4, 1),
+         auto.key = list(title = "Dados Titanic", columns = 2),
+         scales = list(x = "free"))
+```
+
+
+```{r}
+# Contagem de elementos
+# Dataset iris 
+PetalLength <- equal.count(iris$Petal.Length, 4)
+PetalLength
+```
+
+
+```{r}
+# ScatterPlots 
+xyplot(Sepal.Length~Sepal.Width | PetalLength, data = iris)
+# relação de duas variaveis com outra (uma) variável
+```
+
+```{r}
+xyplot(Sepal.Length~Sepal.Width | PetalLength, data = iris,
+       panel = function(...) {
+         panel.grid(h = -1, v = -1, col.line = "skyblue")
+         panel.xyplot(...)})
+
+```
+```{r}
+# add lm
+xyplot(Sepal.Length~Sepal.Width | PetalLength, data = iris,
+       panel = function(x,y,...) {
+         panel.xyplot(x,y,...)
+         mylm <- lm(y~x)
+         panel.abline(mylm)})
+# lm modelo de regressão(preditivo)
+```
+
+```{r}
+# Histograma das 3 distrib.
+histogram(~Sepal.Length | Species, xlab = "",
+          data = iris, layout=c(3,1), type = "density",
+          main = "Histograma Lattice", sub = "Iris Dataset, Sepal Length")
+```
+```{r}
+# Distribuição dos dados
+qqmath(~ Sepal.Length | Species, data = iris, distribution = qunif)
+```
+```{r}
+# Boxplot
+bwplot(Species~Sepal.Length, data = iris)
+```
+
+```{r}
+# ViolinPlot
+bwplot(Species~Sepal.Length, data = iris,
+       panel = panel.violin)
+```
+
+OBS: o pacote lattice é muito útil para análise de dados, principalmente para
+comparação de diversas variáveis.
+
+Fim

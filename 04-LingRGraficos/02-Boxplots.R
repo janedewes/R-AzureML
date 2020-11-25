@@ -8,7 +8,7 @@
 
 
 # def dir
-setwd("C:/Users/paloma/Desktop/DSA/BigDataRAzure/04-LingRGraficos")
+setwd("C:/Users/paloma/Desktop/GitHub/R-Tools/04-LingRGraficos")
 getwd()
 
 ?boxplot

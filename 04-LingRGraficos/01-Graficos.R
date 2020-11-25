@@ -3,7 +3,7 @@
 
 
 #def dir 
-setwd("C:/Users/paloma/Desktop/DSA/BigDataRAzure/04-LingRGraficos")
+setwd("C:/Users/paloma/Desktop/GitHub/R-Tools/04-LingRGraficos")
 getwd()
 
 
@@ -13,7 +13,6 @@ search()
 
 # Demo 
 # OBS: (demosntra como usar os pacotes, nesse ex, quais passos p contruir o plot)
-demo("graphics")
 
 
 # Plot Básico 
